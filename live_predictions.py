@@ -6,9 +6,11 @@ from tensorflow import keras
 import librosa
 import numpy as np
 import os
+import csv
 
 from config import EXAMPLES_PATH
 from config import MODEL_DIR_PATH
+from config import DATA_PATH
 
 
 class LivePredictions:
@@ -38,7 +40,7 @@ class LivePredictions:
 
 
         for file in self.files:
-            data, sampling_rate = librosa.load(file)
+            data, sampling_rate = librosa.load("data/" + file)
             mfccs = np.mean(librosa.feature.mfcc(y=data, sr=sampling_rate, n_mfcc=40).T, axis=0)
             x = np.expand_dims(mfccs, axis=2)
             x = np.expand_dims(x, axis=0)
@@ -47,7 +49,7 @@ class LivePredictions:
             label = self.convert_class_to_emotion(predictions)
 
             # writing the data rows 
-            csvwriter.writerow([[file, label, confidence]])
+            csvwriter.writerow([file, label, confidence])
 
             
 
